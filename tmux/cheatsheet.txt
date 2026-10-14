@@ -1,0 +1,49 @@
+@ tmux – Terminal-Multiplexer (Prefix = Ctrl-b)
+## Sessions (Shell)
+tmux | Neue Session starten
+tmux new -s name | Neue benannte Session
+tmux ls | Sessions auflisten
+tmux a -t name | An Session anhängen
+tmux kill-session -t name | Session beenden
+tmux kill-server | Alle Sessions beenden
+## Sessions (im tmux)
+Prefix d | Von Session lösen (detach)
+Prefix $ | Session umbenennen
+Prefix s | Sessions-Liste / wechseln
+Prefix ( / ) | Vorherige / nächste Session
+## Fenster (Windows)
+Prefix c | Neues Fenster
+Prefix , | Fenster umbenennen
+Prefix n / p | Nächstes / voriges Fenster
+Prefix 0-9 | Zu Fenster Nr. wechseln
+Prefix w | Fensterliste
+Prefix l | Zuletzt benutztes Fenster
+Prefix & | Fenster schließen
+## Panes
+Prefix % | Vertikal teilen (nebeneinander)
+Prefix " | Horizontal teilen (untereinander)
+Prefix Pfeiltaste | Zwischen Panes wechseln
+Prefix o | Nächstes Pane
+Prefix ; | Zuletzt benutztes Pane
+Prefix x | Pane schließen
+Prefix z | Pane Zoom an/aus
+Prefix { / } | Pane nach links / rechts tauschen
+Prefix Space | Layout durchschalten
+Prefix Alt-1..5 | Layout direkt wählen
+Prefix q | Pane-Nummern anzeigen
+Prefix ! | Pane in eigenes Fenster lösen
+Prefix Ctrl-Pfeil | Pane-Größe ändern
+## Kopiermodus / Scrollen
+Prefix [ | Kopiermodus starten (scrollen)
+q | Kopiermodus verlassen
+Space / Enter | Auswahl starten / kopieren
+Prefix ] | Kopierten Text einfügen
+/ oder ? | Im Kopiermodus suchen
+## Sonstiges
+Prefix : | Kommandozeile
+Prefix ? | Alle Tastenkürzel anzeigen
+Prefix t | Uhr anzeigen
+Prefix r | (mit Config) Konfiguration neu laden
+tmux source ~/.tmux.conf | Konfiguration neu laden
+setw -g mode-keys vi | Vi-Tasten im Kopiermodus
+set -g mouse on | Maus aktivieren
