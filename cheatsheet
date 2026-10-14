@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# cheatsheet – farbige Cheatsheets im Terminal
+# Aufruf: cheatsheet [thema] [suchbegriff]
+SELF="$(readlink -f "${BASH_SOURCE[0]}")"
+DIR="$(dirname "$SELF")"
+
+if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+  R=$'\e[0m'; B=$'\e[1m'; D=$'\e[2m'
+  C1=$'\e[38;5;81m'; C2=$'\e[38;5;215m'; C3=$'\e[38;5;114m'; C4=$'\e[38;5;141m'; C5=$'\e[38;5;245m'
+else
+  R=; B=; D=; C1=; C2=; C3=; C4=; C5=
+fi
+COLS=$(tput cols 2>/dev/null || echo 100)
+
+topics() { for d in "$DIR"/*/; do [[ -f "$d/cheatsheet.txt" ]] && basename "$d"; done; }
+
+usage() {
+  printf '\n %s%s⚡ cheatsheet%s  %sKurzreferenzen im Terminal%s\n\n' "$B" "$C1" "$R" "$C5" "$R"
+  printf ' %sAufruf:%s cheatsheet %s<thema>%s [%ssuchbegriff%s]\n\n' "$B" "$R" "$C2" "$R" "$C3" "$R"
+  printf ' %sVerfügbare Themen:%s\n' "$B" "$R"
+  for t in $(topics); do
+    title=$(grep -m1 '^@' "$DIR/$t/cheatsheet.txt" | sed 's/^@ *//')
+    printf '   %s▸ %-8s%s %s%s%s\n' "$C2" "$t" "$R" "$C5" "$title" "$R"
+  done
+  printf '\n'
+}
+
+render() {
+  local file="$1" filter="${2:-}" pending="" section="" shown=0
+  local w=0 left right
+  # Breite der linken Spalte bestimmen (max. 46)
+  while IFS= read -r line; do
+    [[ "$line" == *" | "* ]] || continue
+    left="${line%% | *}"; (( ${#left} > w )) && w=${#left}
+  done < "$file"
+  (( w > 46 )) && w=46
+  while IFS= read -r line; do
+    case "$line" in
+      "@ "*)
+        local t="${line#@ }" bar
+        bar=; for ((i=0; i<${#t}+4; i++)); do bar+='─'; done
+        printf '\n %s%s╭%s╮%s\n %s%s│  %s  │%s\n %s%s╰%s╯%s\n' "$B" "$C1" "$bar" "$R" "$B" "$C1" "$t" "$R" "$B" "$C1" "$bar" "$R" ;;
+      "## "*)
+        pending="${line#\#\# }"; section="$pending" ;;
+      *" | "*)
+        left="${line%% | *}"; right="${line#* | }"
+        if [[ -n "$filter" ]] && ! grep -qiF -- "$filter" <<<"$line $section"; then continue; fi
+        if [[ -n "$pending" ]]; then
+          printf '\n %s%s▌ %s%s\n' "$B" "$C4" "${pending^^}" "$R"; pending=""
+        fi
+        printf '   %s%-*s%s %s→%s %s\n' "$C2" "$w" "$left" "$R" "$C5" "$R" "$right"
+        shown=1 ;;
+    esac
+  done < "$file"
+  (( shown )) || printf '\n %sKeine Treffer für „%s“.%s\n' "$C3" "$filter" "$R"
+  printf '\n'
+}
+
+case "${1:-}" in
+  ""|-h|--help|list) usage; exit 0 ;;
+esac
+
+topic="$1"; shift
+if [[ ! -f "$DIR/$topic/cheatsheet.txt" ]]; then
+  printf ' \e[31m✗ Unbekanntes Thema: %s\e[0m\n' "$topic" >&2; usage >&2; exit 1
+fi
+out=$(render "$DIR/$topic/cheatsheet.txt" "$*")
+if [[ -t 1 ]] && (( $(wc -l <<<"$out") > $(tput lines 2>/dev/null || echo 50) )); then
+  printf '%s\n' "$out" | ${PAGER:-less} -R -F -X
+else
+  printf '%s\n' "$out"
+fi
