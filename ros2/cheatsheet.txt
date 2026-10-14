@@ -1,0 +1,74 @@
+@ ROS 2 – Robot Operating System
+## Umgebung
+source /opt/ros/<distro>/setup.bash | ROS 2 einbinden
+source install/setup.bash | Eigenen Workspace einbinden
+printenv ROS_DISTRO | ROS-Variablen prüfen
+export ROS_DOMAIN_ID=N | Domain-ID setzen (Netzwerk-Isolation)
+ros2 doctor | Setup diagnostizieren
+## Nodes
+ros2 run <pkg> <exe> | Node starten
+ros2 node list | Laufende Nodes
+ros2 node info /node | Infos zu Node (Topics, Services, Actions)
+ros2 run <pkg> <exe> --ros-args -r __node:=name | Node umbenennen
+ros2 run <pkg> <exe> --ros-args -p param:=wert | Parameter beim Start setzen
+## Topics
+ros2 topic list [-t] | Topics (mit Typ) auflisten
+ros2 topic echo /topic | Nachrichten anzeigen
+ros2 topic info /topic [-v] | Typ, Publisher, Subscriber
+ros2 topic hz /topic | Veröffentlichungsrate
+ros2 topic bw /topic | Bandbreite
+ros2 topic pub /topic <typ> "{data: x}" | Nachricht senden
+ros2 topic pub -r 10 /topic ... | Mit 10 Hz senden
+ros2 topic find <typ> | Topics nach Typ finden
+## Services
+ros2 service list [-t] | Services auflisten
+ros2 service type /srv | Service-Typ anzeigen
+ros2 service call /srv <typ> "{a: 1}" | Service aufrufen
+ros2 service find <typ> | Services nach Typ finden
+## Actions
+ros2 action list [-t] | Actions auflisten
+ros2 action info /action | Action-Infos
+ros2 action send_goal /a <typ> "{...}" | Goal senden
+ros2 action send_goal --feedback ... | Mit Feedback-Ausgabe
+## Parameter
+ros2 param list | Alle Parameter
+ros2 param get /node param | Wert lesen
+ros2 param set /node param wert | Wert setzen
+ros2 param dump /node | Parameter als YAML ausgeben
+ros2 param load /node datei.yaml | Parameter aus YAML laden
+## Interfaces (msg/srv/action)
+ros2 interface list | Alle Interfaces
+ros2 interface show pkg/msg/Typ | Definition anzeigen
+ros2 interface package <pkg> | Interfaces eines Pakets
+ros2 interface proto pkg/msg/Typ | Beispiel-Nachricht ausgeben
+## Launch
+ros2 launch <pkg> <file.launch.py> | Launch-Datei starten
+ros2 launch <pkg> <file> arg:=wert | Mit Launch-Argument
+ros2 launch <pkg> <file> --show-args | Argumente anzeigen
+## Pakete
+ros2 pkg list | Pakete auflisten
+ros2 pkg prefix <pkg> | Installationspfad
+ros2 pkg executables <pkg> | Ausführbare Dateien
+ros2 pkg create --build-type ament_cmake <name> | C++-Paket anlegen
+ros2 pkg create --build-type ament_python <name> | Python-Paket anlegen
+## Bauen (colcon)
+colcon build | Workspace bauen
+colcon build --packages-select <pkg> | Nur ein Paket bauen
+colcon build --packages-up-to <pkg> | Paket + Abhängigkeiten
+colcon build --symlink-install | Python/Config per Symlink (kein Rebuild)
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release | Release-Build
+colcon test && colcon test-result --verbose | Tests ausführen / Ergebnis
+rosdep install --from-paths src -y --ignore-src | Abhängigkeiten installieren
+## Bags (Aufzeichnen)
+ros2 bag record -a | Alle Topics aufzeichnen
+ros2 bag record /t1 /t2 -o name | Bestimmte Topics aufzeichnen
+ros2 bag play name | Bag abspielen
+ros2 bag play name --loop -r 0.5 | Wiederholen, halbe Geschwindigkeit
+ros2 bag info name | Bag-Infos
+## TF & Tools
+ros2 run tf2_tools view_frames | TF-Baum als PDF
+ros2 run tf2_ros tf2_echo a b | Transformation a→b anzeigen
+rqt_graph | Node/Topic-Graph
+rqt | GUI-Werkzeuge
+rviz2 | Visualisierung
+ros2 daemon stop / start | Daemon neu starten (bei Discovery-Problemen)
