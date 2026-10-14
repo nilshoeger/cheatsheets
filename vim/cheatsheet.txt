@@ -1,0 +1,71 @@
+@ Vim – Editor
+## Modi
+i / a | Einfügen vor / nach dem Cursor
+I / A | Einfügen am Zeilenanfang / -ende
+o / O | Neue Zeile unter / über der aktuellen
+v / V / Ctrl-v | Visual: Zeichen / Zeile / Block
+Esc / Ctrl-[ | Zurück in den Normalmodus
+R | Replace-Modus (überschreiben)
+## Bewegen
+h j k l | Links / runter / hoch / rechts
+w / b / e | Wort vor / zurück / Wortende
+0 / ^ / $ | Zeilenanfang / erstes Zeichen / Zeilenende
+gg / G | Dateianfang / Dateiende
+:42 / 42G | Gehe zu Zeile 42
+% | Zur passenden Klammer springen
+{ / } | Absatz zurück / vor
+Ctrl-d / Ctrl-u | Halbe Seite runter / hoch
+H / M / L | Oben / Mitte / Unten im Fenster
+zz / zt / zb | Cursorzeile zentrieren / oben / unten
+## Editieren
+x / X | Zeichen unter / vor Cursor löschen
+dd / D | Zeile löschen / bis Zeilenende löschen
+yy / yw | Zeile / Wort kopieren (yank)
+p / P | Einfügen nach / vor Cursor
+cw / cc / C | Wort / Zeile / Rest der Zeile ändern
+ciw / ci" / ci( | Inneres Wort / Anführungszeichen / Klammern ändern
+r<x> | Zeichen durch x ersetzen
+J | Zeilen zusammenfügen
+>> / << | Einrücken / ausrücken
+. | Letzte Änderung wiederholen
+u / Ctrl-r | Rückgängig / Wiederholen
+~ | Groß-/Kleinschreibung umschalten
+gU / gu + Bewegung | Großbuchstaben / Kleinbuchstaben
+## Suchen & Ersetzen
+/text | Vorwärts suchen (n / N: nächster / voriger)
+?text | Rückwärts suchen
+* / # | Wort unter Cursor vorwärts / rückwärts suchen
+:%s/alt/neu/g | Überall ersetzen
+:%s/alt/neu/gc | Überall ersetzen mit Nachfrage
+:s/alt/neu/ | Ersetzen in aktueller Zeile
+:noh | Such-Hervorhebung ausschalten
+## Dateien & Puffer
+:w / :q / :wq | Speichern / Beenden / Beides
+:q! | Beenden ohne Speichern
+:x / ZZ | Speichern und beenden
+:e datei | Datei öffnen
+:ls | Puffer auflisten
+:b N / :bn / :bp | Zu Puffer N / nächster / voriger
+:bd | Puffer schließen
+## Fenster & Tabs
+:sp / :vsp | Horizontal / vertikal teilen
+Ctrl-w h/j/k/l | Zwischen Fenstern wechseln
+Ctrl-w c / o | Fenster schließen / alle anderen schließen
+Ctrl-w = | Fenstergrößen angleichen
+:tabnew | Neuer Tab
+gt / gT | Nächster / voriger Tab
+## Makros, Marks, Register
+qa ... q | Makro in Register a aufnehmen
+@a / @@ | Makro abspielen / wiederholen
+ma / 'a | Mark a setzen / dorthin springen
+"ayy / "ap | In Register a kopieren / einfügen
+"+y / "+p | System-Zwischenablage kopieren / einfügen
+:reg | Register anzeigen
+## Nützliches
+:set number | Zeilennummern anzeigen
+:set paste | Paste-Modus (kein Auto-Indent)
+:!befehl | Shell-Befehl ausführen
+:r !befehl | Ausgabe eines Befehls einfügen
+:%!sort | Puffer durch Befehl filtern
+gv | Letzte Visual-Auswahl wiederherstellen
+Ctrl-o / Ctrl-i | Sprungliste zurück / vor
