@@ -15,6 +15,7 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 | `docker` | Docker – Container, Images & Compose           |
 | `dotnet` | dotnet – .NET (Core) CLI                       |
 | `chmod`  | chmod – Dateirechte ändern                     |
+| `groups` | Linux – Gruppen verwalten                      |
 
 ## Verwendung
 

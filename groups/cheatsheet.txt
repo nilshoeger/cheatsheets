@@ -1,0 +1,63 @@
+@ Linux – Gruppen
+## Anzeigen
+groups | Eigene Gruppen
+groups <user> | Gruppen eines Benutzers
+id -nG <user> | Gruppennamen eines Benutzers
+id -g | Primäre Gruppen-ID
+getent group | Alle Gruppen
+getent group <gruppe> | Mitglieder einer Gruppe
+cut -d: -f1 /etc/group | Alle Gruppennamen
+members <gruppe> | Mitglieder auflisten (Paket members)
+lid -g <gruppe> | Mitglieder per libuser-Tool
+## Anlegen & löschen
+sudo addgroup <gruppe> | Gruppe anlegen (Ubuntu-Frontend)
+sudo groupadd <gruppe> | Gruppe anlegen (Low-Level)
+sudo groupadd -g 1500 <gruppe> | Gruppe mit fester GID
+sudo groupadd -r <gruppe> | Systemgruppe anlegen
+sudo delgroup <gruppe> | Gruppe löschen
+sudo groupdel <gruppe> | Gruppe löschen (Low-Level)
+sudo groupmod -n <neu> <alt> | Gruppe umbenennen
+sudo groupmod -g 1600 <gruppe> | GID ändern
+## Mitglieder verwalten
+sudo usermod -aG <gruppe> <user> | Benutzer hinzufügen (-a nicht vergessen!)
+sudo usermod -aG <g1>,<g2> <user> | Zu mehreren Gruppen hinzufügen
+sudo usermod -g <gruppe> <user> | Primäre Gruppe ändern
+sudo usermod -G <g1>,<g2> <user> | Zusatzgruppen ÜBERSCHREIBEN (Vorsicht)
+sudo adduser <user> <gruppe> | Benutzer hinzufügen (Ubuntu)
+sudo gpasswd -a <user> <gruppe> | Benutzer hinzufügen
+sudo gpasswd -d <user> <gruppe> | Benutzer entfernen
+sudo deluser <user> <gruppe> | Benutzer aus Gruppe entfernen (Ubuntu)
+sudo gpasswd -M u1,u2 <gruppe> | Mitgliederliste komplett setzen
+sudo gpasswd -A <user> <gruppe> | Gruppen-Admin festlegen
+## Aktive Gruppe
+newgrp <gruppe> | Neue Shell mit anderer aktiver Gruppe
+sg <gruppe> -c '<befehl>' | Einzelnen Befehl mit anderer Gruppe
+su - <user> | Neu einloggen, damit neue Gruppen gelten
+exit | Newgrp-Shell verlassen
+## Dateien & Gruppen
+ls -l <datei> | Besitzergruppe anzeigen
+sudo chgrp <gruppe> <datei> | Gruppe einer Datei ändern
+sudo chgrp -R <gruppe> <ordner> | Rekursiv ändern
+sudo chown :<gruppe> <datei> | Nur Gruppe ändern (chown)
+sudo chown <user>:<gruppe> <datei> | Besitzer und Gruppe setzen
+chmod g+s <ordner> | Setgid: neue Dateien erben die Gruppe
+chmod 2775 <ordner> | Gruppenordner mit Setgid
+find / -group <gruppe> 2>/dev/null | Alle Dateien einer Gruppe
+## Gemeinsamer Projektordner
+sudo addgroup projekt | 1. Gruppe anlegen
+sudo usermod -aG projekt <user> | 2. Mitglieder hinzufügen
+sudo chgrp projekt /srv/projekt | 3. Gruppe zuweisen
+sudo chmod 2775 /srv/projekt | 4. Gruppenschreibrecht + Setgid
+## Häufige Systemgruppen
+sudo | Darf sudo nutzen
+docker | Docker ohne sudo (root-äquivalent!)
+adm | Logfiles lesen (/var/log)
+www-data | Webserver-Benutzer (nginx/apache)
+dialout | Serielle Ports (/dev/ttyUSB*)
+video | Kamera- und GPU-Zugriff
+plugdev | Wechselgeräte
+libvirt | VMs verwalten
+## Wichtige Dateien
+/etc/group | Gruppen und Mitglieder (name:x:GID:mitglieder)
+/etc/gshadow | Gruppenpasswörter und Admins
+/etc/login.defs | GID-Bereiche und Defaults
