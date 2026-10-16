@@ -1,0 +1,76 @@
+@ git – Versionsverwaltung
+## Setup
+git config --global user.name "Name" | Name setzen
+git config --global user.email "mail" | E-Mail setzen
+git config --global init.defaultBranch main | Standard-Branch festlegen
+git config --list | Konfiguration anzeigen
+git init | Neues Repo anlegen
+git clone <url> | Repo klonen
+## Status & Verlauf
+git status | Status der Arbeitskopie
+git status -sb | Kurzer Status mit Branch
+git log --oneline --graph --all | Verlauf als Graph
+git log -p <datei> | Änderungen einer Datei im Verlauf
+git log -S"text" | Commits, die "text" hinzufügen/entfernen
+git show <commit> | Einen Commit anzeigen
+git blame <datei> | Zeilenweise Autor anzeigen
+git diff | Unstaged Änderungen
+git diff --staged | Gestagte Änderungen
+git diff a..b | Unterschied zwischen zwei Refs
+## Änderungen sichern
+git add <datei> | Datei stagen
+git add -p | Änderungen stückweise stagen
+git add -A | Alles stagen
+git commit -m "msg" | Commit erstellen
+git commit --amend | Letzten Commit ändern
+git commit --amend --no-edit | Letzten Commit ergänzen, Message behalten
+## Branches
+git branch | Lokale Branches
+git branch -a | Alle Branches inkl. remote
+git switch <branch> | Branch wechseln
+git switch -c <branch> | Neuen Branch anlegen und wechseln
+git branch -d <branch> | Branch löschen (gemerged)
+git branch -D <branch> | Branch erzwungen löschen
+git branch -m <neu> | Aktuellen Branch umbenennen
+## Mergen & Rebase
+git merge <branch> | Branch einmergen
+git merge --no-ff <branch> | Merge mit eigenem Merge-Commit
+git merge --abort | Merge abbrechen
+git rebase <branch> | Aktuellen Branch auf <branch> rebasen
+git rebase -i HEAD~3 | Letzte 3 Commits interaktiv bearbeiten
+git rebase --abort | Rebase abbrechen
+git cherry-pick <commit> | Einzelnen Commit übernehmen
+## Remote
+git remote -v | Remotes anzeigen
+git remote add origin <url> | Remote hinzufügen
+git fetch | Änderungen holen, nicht mergen
+git pull | Holen und mergen
+git pull --ff-only | Nur fast-forward holen
+git push | Pushen
+git push -u origin <branch> | Pushen und Upstream setzen
+git push --force-with-lease | Sicheres Force-Push
+git push origin --delete <branch> | Remote-Branch löschen
+## Rückgängig machen
+git restore <datei> | Änderungen in Datei verwerfen
+git restore --staged <datei> | Datei unstagen
+git reset --soft HEAD~1 | Letzten Commit zurück, Änderungen bleiben gestaged
+git reset --hard HEAD~1 | Letzten Commit samt Änderungen verwerfen
+git revert <commit> | Commit durch Gegen-Commit rückgängig machen
+git clean -fd | Untracked Dateien und Ordner löschen
+git reflog | Verlauf aller HEAD-Bewegungen (Rettung)
+## Stash
+git stash | Änderungen zwischenspeichern
+git stash -u | Inkl. untracked Dateien
+git stash list | Stashes auflisten
+git stash pop | Letzten Stash anwenden und löschen
+git stash apply | Letzten Stash anwenden, behalten
+git stash drop | Letzten Stash löschen
+## Tags
+git tag | Tags auflisten
+git tag -a v1.0.0 -m "msg" | Annotierten Tag erstellen
+git push origin v1.0.0 | Tag pushen
+git push --tags | Alle Tags pushen
+git tag -d v1.0.0 | Tag lokal löschen
+## Submodule & Worktree
+git submodule update --init --recursive | Submodule initialisieren
+git worktree add ../pfad <branch> | Zweites Arbeitsverzeichnis

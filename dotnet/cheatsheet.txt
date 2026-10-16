@@ -1,0 +1,71 @@
+@ dotnet – .NET (Core) CLI
+## Info
+dotnet --version | SDK-Version
+dotnet --info | Details zu SDK und Runtime
+dotnet --list-sdks | Installierte SDKs
+dotnet --list-runtimes | Installierte Runtimes
+dotnet new list | Verfügbare Vorlagen
+## Projekte anlegen
+dotnet new console -n App | Konsolen-App
+dotnet new webapi -n Api | ASP.NET Core Web API
+dotnet new web -n Web | Minimale ASP.NET-Core-App
+dotnet new mvc -n Web | ASP.NET Core MVC
+dotnet new blazor -n Web | Blazor-App
+dotnet new classlib -n Lib | Klassenbibliothek
+dotnet new xunit -n App.Tests | xUnit-Testprojekt
+dotnet new sln -n Name | Solution-Datei
+dotnet new gitignore | .gitignore für .NET
+dotnet new globaljson --sdk-version 8.0.100 | SDK-Version festlegen
+## Solution
+dotnet sln add src/App/App.csproj | Projekt zur Solution hinzufügen
+dotnet sln remove src/App/App.csproj | Projekt entfernen
+dotnet sln list | Projekte der Solution
+dotnet add reference ../Lib/Lib.csproj | Projektreferenz hinzufügen
+## Bauen & Starten
+dotnet restore | NuGet-Pakete wiederherstellen
+dotnet build | Projekt bauen
+dotnet build -c Release | Release-Build
+dotnet run | Projekt starten
+dotnet run --project src/Api | Bestimmtes Projekt starten
+dotnet run --launch-profile https | Mit Launch-Profil starten
+dotnet watch run | Neustart bei Dateiänderungen
+dotnet watch test | Tests bei Änderungen erneut ausführen
+dotnet clean | Build-Ausgaben löschen
+## Tests
+dotnet test | Alle Tests ausführen
+dotnet test --filter "Name~Login" | Tests nach Namen filtern
+dotnet test --logger "console;verbosity=detailed" | Detaillierte Ausgabe
+dotnet test --collect:"XPlat Code Coverage" | Code Coverage sammeln
+## NuGet-Pakete
+dotnet add package <Name> | Paket hinzufügen
+dotnet add package <Name> --version 1.2.3 | Bestimmte Version
+dotnet remove package <Name> | Paket entfernen
+dotnet list package | Installierte Pakete
+dotnet list package --outdated | Veraltete Pakete
+dotnet list package --vulnerable | Pakete mit Sicherheitslücken
+dotnet nuget locals all --clear | NuGet-Cache leeren
+## Veröffentlichen
+dotnet publish -c Release -o out | Für Deployment veröffentlichen
+dotnet publish -c Release -r linux-x64 --self-contained | Eigenständig für Linux
+dotnet publish -p:PublishSingleFile=true | Einzelne Datei
+dotnet publish -p:PublishTrimmed=true | Ungenutzten Code entfernen
+dotnet out/App.dll | Veröffentlichte App starten
+## Entity Framework (dotnet-ef)
+dotnet tool install --global dotnet-ef | EF-Tools installieren
+dotnet ef migrations add <Name> | Migration erstellen
+dotnet ef migrations remove | Letzte Migration entfernen
+dotnet ef database update | Datenbank aktualisieren
+dotnet ef database update <Migration> | Auf bestimmte Migration setzen
+dotnet ef database drop | Datenbank löschen
+dotnet ef migrations script | SQL-Skript erzeugen
+## Tools & Sonstiges
+dotnet tool list --global | Globale Tools auflisten
+dotnet tool update --global <Name> | Tool aktualisieren
+dotnet format | Code formatieren
+dotnet dev-certs https --trust | HTTPS-Entwicklerzertifikat vertrauen
+dotnet user-secrets init | User-Secrets aktivieren
+dotnet user-secrets set "Key" "Wert" | Secret setzen
+## Umgebung
+export ASPNETCORE_ENVIRONMENT=Development | Umgebung setzen
+export ASPNETCORE_URLS=http://0.0.0.0:5000 | URLs/Port festlegen
+export DOTNET_CLI_TELEMETRY_OPTOUT=1 | Telemetrie abschalten

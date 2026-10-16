@@ -1,0 +1,74 @@
+@ Docker – Container
+## Container starten
+docker run <image> | Container starten
+docker run -d --name web -p 8080:80 nginx | Im Hintergrund, Port 8080 -> 80
+docker run -it --rm ubuntu bash | Interaktiv, danach automatisch löschen
+docker run -v $(pwd):/app <image> | Ordner einbinden (Bind-Mount)
+docker run -v daten:/var/lib/x <image> | Benanntes Volume nutzen
+docker run -e KEY=wert <image> | Umgebungsvariable setzen
+docker run --restart unless-stopped <image> | Automatischer Neustart
+docker run --network <netz> <image> | In bestimmtes Netzwerk
+## Container verwalten
+docker ps | Laufende Container
+docker ps -a | Alle Container
+docker stop <name> | Container stoppen
+docker start <name> | Container starten
+docker restart <name> | Container neu starten
+docker rm <name> | Container löschen
+docker rm -f <name> | Laufenden Container erzwungen löschen
+docker container prune | Alle gestoppten Container löschen
+## Im Container arbeiten
+docker exec -it <name> bash | Shell im laufenden Container
+docker exec <name> <befehl> | Befehl im Container ausführen
+docker logs -f <name> | Logs verfolgen
+docker logs --tail 100 <name> | Letzte 100 Zeilen
+docker cp <name>:/pfad ./ziel | Datei aus Container kopieren
+docker inspect <name> | Details als JSON
+docker stats | Live-Ressourcenverbrauch
+docker top <name> | Prozesse im Container
+## Images
+docker images | Lokale Images
+docker pull <image>:<tag> | Image laden
+docker build -t name:tag . | Image aus Dockerfile bauen
+docker build --no-cache -t name:tag . | Ohne Cache bauen
+docker tag <image> <repo>/<name>:<tag> | Image umbenennen/taggen
+docker push <repo>/<name>:<tag> | Image hochladen
+docker rmi <image> | Image löschen
+docker image prune -a | Ungenutzte Images löschen
+docker history <image> | Layer eines Images
+## Volumes & Netzwerke
+docker volume ls | Volumes auflisten
+docker volume create <name> | Volume anlegen
+docker volume rm <name> | Volume löschen
+docker network ls | Netzwerke auflisten
+docker network create <name> | Netzwerk anlegen
+docker network connect <netz> <container> | Container verbinden
+## Docker Compose
+docker compose up -d | Dienste im Hintergrund starten
+docker compose up -d --build | Neu bauen und starten
+docker compose down | Dienste stoppen und entfernen
+docker compose down -v | Zusätzlich Volumes löschen
+docker compose ps | Status der Dienste
+docker compose logs -f <dienst> | Logs eines Dienstes
+docker compose exec <dienst> bash | Shell in Dienst
+docker compose pull | Images aktualisieren
+docker compose config | Zusammengeführte Konfiguration prüfen
+## Aufräumen & System
+docker system df | Speicherverbrauch
+docker system prune | Ungenutztes entfernen
+docker system prune -a --volumes | Alles Ungenutzte inkl. Volumes entfernen
+docker info | Infos zum Docker-Daemon
+docker login | Bei Registry anmelden
+## Dockerfile
+FROM <image>:<tag> | Basis-Image
+WORKDIR /app | Arbeitsverzeichnis
+COPY . . | Dateien ins Image kopieren
+RUN <befehl> | Befehl beim Build ausführen
+ENV KEY=wert | Umgebungsvariable
+EXPOSE 8080 | Port dokumentieren
+USER <name> | Als Benutzer ausführen
+ENTRYPOINT ["dotnet", "App.dll"] | Fester Startbefehl
+CMD ["--help"] | Standardargumente
+## Docker ohne sudo (Ubuntu)
+sudo usermod -aG docker $USER | Benutzer zur docker-Gruppe hinzufügen
+newgrp docker | Gruppe sofort aktivieren (sonst neu einloggen)

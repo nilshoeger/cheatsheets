@@ -4,11 +4,16 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 
 ## Verfügbare Themen
 
-| Thema  | Inhalt                                   |
-|--------|------------------------------------------|
-| `vim`  | Vim – Editor                             |
-| `tmux` | tmux – Terminal-Multiplexer              |
-| `ros2` | ROS 2 – Robot Operating System           |
+| Thema    | Inhalt                                         |
+|----------|------------------------------------------------|
+| `vim`    | Vim – Editor                                   |
+| `tmux`   | tmux – Terminal-Multiplexer                    |
+| `ros2`   | ROS 2 – Robot Operating System                 |
+| `git`    | git – Versionsverwaltung                       |
+| `nginx`  | nginx – Webserver & Reverse Proxy              |
+| `users`  | Linux (Ubuntu) – Benutzer- & Gruppenverwaltung |
+| `docker` | Docker – Container, Images & Compose           |
+| `dotnet` | dotnet – .NET (Core) CLI                       |
 
 ## Verwendung
 
@@ -17,6 +22,8 @@ cheatsheet              # Liste aller Themen
 cheatsheet vim          # komplettes Cheatsheet
 cheatsheet tmux pane    # nur Einträge, die zu "pane" passen
 cheatsheet ros2 bag     # Suche in Befehlen, Beschreibungen und Sektionsnamen
+cheatsheet docker logs  # z. B. alle Log-Befehle von Docker
+cheatsheet --update     # neue Cheatsheets aus dem Git-Repo holen
 ```
 
 - Die Suche ignoriert Groß-/Kleinschreibung und durchsucht Befehle, Beschreibungen und Sektionsnamen.
@@ -48,8 +55,13 @@ cheatsheets/
 ├── cheatsheet          # Skript (Bash)
 ├── install.sh          # Installer (Symlink in den PATH)
 ├── README.md
+├── docker/cheatsheet.txt
+├── dotnet/cheatsheet.txt
+├── git/cheatsheet.txt
+├── nginx/cheatsheet.txt
 ├── ros2/cheatsheet.txt
 ├── tmux/cheatsheet.txt
+├── users/cheatsheet.txt
 └── vim/cheatsheet.txt
 ```
 

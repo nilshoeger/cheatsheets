@@ -1,0 +1,68 @@
+@ Linux (Ubuntu) – Benutzer- & Gruppenverwaltung
+## Benutzer anzeigen
+whoami | Aktueller Benutzer
+id | UID, GID und Gruppen
+id <user> | Infos zu anderem Benutzer
+who | Angemeldete Benutzer
+w | Angemeldete Benutzer und ihre Aktivität
+last | Letzte Logins
+getent passwd <user> | Eintrag aus passwd-Datenbank
+cut -d: -f1 /etc/passwd | Alle Benutzernamen auflisten
+## Benutzer anlegen
+sudo adduser <user> | Benutzer interaktiv anlegen (empfohlen)
+sudo adduser --system --group --no-create-home <user> | Dienst-Benutzer ohne Login
+sudo useradd -m -s /bin/bash <user> | Benutzer mit Home und Bash (Low-Level)
+sudo useradd -m -G sudo,docker <user> | Benutzer mit Zusatzgruppen
+sudo passwd <user> | Passwort setzen/ändern
+passwd | Eigenes Passwort ändern
+## Benutzer ändern
+sudo usermod -aG <gruppe> <user> | Zu Gruppe hinzufügen (-a nicht vergessen!)
+sudo usermod -s /bin/zsh <user> | Login-Shell ändern
+sudo usermod -l <neu> <alt> | Benutzer umbenennen
+sudo usermod -d /neu/home -m <user> | Home-Verzeichnis verschieben
+sudo usermod -L <user> | Konto sperren
+sudo usermod -U <user> | Konto entsperren
+sudo chage -l <user> | Passwort-Ablauf anzeigen
+sudo chage -E 2026-12-31 <user> | Konto-Ablaufdatum setzen
+sudo chage -d 0 <user> | Passwortwechsel beim nächsten Login erzwingen
+## Benutzer löschen
+sudo deluser <user> | Benutzer löschen (Home bleibt)
+sudo deluser --remove-home <user> | Benutzer samt Home löschen
+sudo userdel -r <user> | Benutzer samt Home löschen (Low-Level)
+## Gruppen
+groups | Eigene Gruppen
+groups <user> | Gruppen eines Benutzers
+getent group <gruppe> | Mitglieder einer Gruppe
+sudo addgroup <gruppe> | Gruppe anlegen
+sudo groupadd -r <gruppe> | Systemgruppe anlegen
+sudo gpasswd -d <user> <gruppe> | Benutzer aus Gruppe entfernen
+sudo delgroup <gruppe> | Gruppe löschen
+newgrp <gruppe> | Aktive Gruppe wechseln
+## sudo & Rechte
+sudo -l | Eigene sudo-Rechte anzeigen
+sudo -u <user> <befehl> | Befehl als anderer Benutzer
+sudo -i | Root-Shell mit Login-Umgebung
+su - <user> | Zu anderem Benutzer wechseln
+sudo visudo | sudoers sicher bearbeiten
+sudo visudo -f /etc/sudoers.d/<name> | Eigene sudoers-Datei
+<user> ALL=(ALL) NOPASSWD:ALL | sudoers: sudo ohne Passwort
+%<gruppe> ALL=(ALL:ALL) ALL | sudoers: ganze Gruppe
+## Dateirechte
+chmod 755 <datei> | rwxr-xr-x setzen
+chmod u+x <datei> | Ausführbar für Besitzer
+chmod -R g+w <ordner> | Gruppe darf schreiben (rekursiv)
+sudo chown <user>:<gruppe> <datei> | Besitzer und Gruppe ändern
+sudo chown -R <user>: <ordner> | Rekursiv, Gruppe = Login-Gruppe
+chmod g+s <ordner> | Setgid: neue Dateien erben die Gruppe
+umask | Standard-Rechtemaske anzeigen
+## SSH-Zugang
+ssh-keygen -t ed25519 | Schlüsselpaar erzeugen
+ssh-copy-id <user>@<host> | Public Key auf Server kopieren
+~/.ssh/authorized_keys | Erlaubte Public Keys (chmod 600)
+sudo passwd -l root | Root-Passwort sperren
+## Wichtige Dateien
+/etc/passwd | Benutzerkonten
+/etc/shadow | Passwort-Hashes (nur root)
+/etc/group | Gruppen
+/etc/sudoers | sudo-Konfiguration
+/etc/skel | Vorlage für neue Home-Verzeichnisse

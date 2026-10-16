@@ -1,0 +1,64 @@
+@ nginx – Webserver & Reverse Proxy
+## Dienst (systemd)
+sudo systemctl start nginx | Starten
+sudo systemctl stop nginx | Stoppen
+sudo systemctl restart nginx | Neu starten (Verbindungen brechen ab)
+sudo systemctl reload nginx | Konfiguration neu laden (ohne Downtime)
+sudo systemctl enable nginx | Autostart aktivieren
+sudo systemctl status nginx | Status anzeigen
+## Test & Debug
+sudo nginx -t | Konfiguration prüfen
+sudo nginx -T | Konfiguration prüfen und komplett ausgeben
+sudo nginx -s reload | Konfiguration neu laden
+nginx -v | Version anzeigen
+nginx -V | Version und Build-Optionen
+sudo tail -f /var/log/nginx/error.log | Fehlerlog verfolgen
+sudo tail -f /var/log/nginx/access.log | Zugriffslog verfolgen
+## Pfade (Debian/Ubuntu)
+/etc/nginx/nginx.conf | Hauptkonfiguration
+/etc/nginx/sites-available/ | Verfügbare Site-Konfigurationen
+/etc/nginx/sites-enabled/ | Aktive Sites (Symlinks)
+/etc/nginx/conf.d/*.conf | Zusätzliche Konfigurationen
+/var/www/html | Standard-Webroot
+sudo ln -s /etc/nginx/sites-available/x /etc/nginx/sites-enabled/ | Site aktivieren
+sudo rm /etc/nginx/sites-enabled/x | Site deaktivieren
+## Server-Block
+listen 80; | Port
+server_name example.com; | Domain
+root /var/www/example; | Dokument-Root
+index index.html; | Index-Datei
+location / { try_files $uri $uri/ =404; } | Statische Dateien
+location /api/ { ... } | Pfad-spezifische Regel
+location ~ \.php$ { ... } | Regex-Match (case-sensitive)
+return 301 https://$host$request_uri; | Weiterleitung auf HTTPS
+error_page 404 /404.html; | Eigene Fehlerseite
+## Reverse Proxy
+proxy_pass http://127.0.0.1:5000; | An Backend weiterleiten
+proxy_set_header Host $host; | Host-Header durchreichen
+proxy_set_header X-Real-IP $remote_addr; | Client-IP weitergeben
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; | Proxy-Kette
+proxy_set_header X-Forwarded-Proto $scheme; | Original-Protokoll
+proxy_http_version 1.1; | Nötig für WebSockets
+proxy_set_header Upgrade $http_upgrade; | WebSocket-Upgrade
+proxy_set_header Connection "upgrade"; | WebSocket-Upgrade
+proxy_read_timeout 60s; | Timeout für Backend-Antwort
+## Upstream / Load Balancing
+upstream app { server 10.0.0.1:5000; server 10.0.0.2:5000; } | Backend-Gruppe
+proxy_pass http://app; | An Upstream-Gruppe senden
+least_conn; | Balancing nach wenigsten Verbindungen
+ip_hash; | Sticky Sessions per Client-IP
+## HTTPS / TLS
+listen 443 ssl; | HTTPS-Port
+ssl_certificate /pfad/fullchain.pem; | Zertifikat
+ssl_certificate_key /pfad/privkey.pem; | Privater Schlüssel
+ssl_protocols TLSv1.2 TLSv1.3; | Erlaubte Protokolle
+sudo certbot --nginx -d example.com | Let's-Encrypt-Zertifikat holen
+sudo certbot renew --dry-run | Erneuerung testen
+## Sicherheit & Performance
+client_max_body_size 50m; | Max. Upload-Größe
+gzip on; | Kompression aktivieren
+add_header X-Content-Type-Options nosniff; | Security-Header
+server_tokens off; | Versionsnummer verstecken
+limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s; | Rate-Limit definieren
+limit_req zone=one burst=20; | Rate-Limit anwenden
+allow 10.0.0.0/8; deny all; | Zugriff per IP einschränken
