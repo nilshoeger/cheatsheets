@@ -16,6 +16,7 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 | `dotnet` | dotnet – .NET (Core) CLI                       |
 | `chmod`  | chmod – Dateirechte ändern                     |
 | `groups` | Linux – Gruppen verwalten                      |
+| `sysadmin` | Linux – Sysadmin: System, Dienste, Netzwerk, Logs |
 
 ## Verwendung
 

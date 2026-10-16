@@ -1,0 +1,213 @@
+@ Linux – Sysadmin
+## System-Info
+uname -a | Kernel und Systeminfo
+hostnamectl | Hostname, OS, Kernel, Hardware
+cat /etc/os-release | Distribution und Version
+uptime | Laufzeit und Load Average
+lscpu | CPU-Infos
+lsblk | Blockgeräte (Platten, Partitionen)
+lspci | PCI-Geräte
+lsusb | USB-Geräte
+free -h | RAM und Swap
+sudo dmidecode -t system | Hardware-Hersteller und Modell
+sudo hostnamectl set-hostname <name> | Hostname setzen
+timedatectl | Zeit, Zeitzone, NTP-Status
+sudo timedatectl set-timezone Europe/Berlin | Zeitzone setzen
+## Prozesse
+ps aux | Alle Prozesse
+ps aux --sort=-%mem | head | Top-Speicherverbraucher
+ps -ef --forest | Prozessbaum
+top | Live-Prozessübersicht
+htop | Komfortablere Übersicht (Paket htop)
+pgrep -a <name> | Prozess nach Name suchen
+kill <pid> | Prozess beenden (SIGTERM)
+kill -9 <pid> | Prozess hart beenden (SIGKILL)
+pkill <name> | Prozesse nach Name beenden
+killall <name> | Alle Prozesse mit Namen beenden
+nice -n 10 <befehl> | Mit niedrigerer Priorität starten
+renice -n 5 -p <pid> | Priorität laufender Prozess ändern
+lsof -p <pid> | Offene Dateien eines Prozesses
+lsof -i :<port> | Wer nutzt diesen Port?
+nohup <befehl> & | Befehl vom Terminal entkoppeln
+## systemd
+systemctl status <dienst> | Status eines Dienstes
+sudo systemctl start|stop|restart <dienst> | Dienst steuern
+sudo systemctl reload <dienst> | Konfiguration neu laden
+sudo systemctl enable --now <dienst> | Autostart aktivieren und starten
+sudo systemctl disable <dienst> | Autostart deaktivieren
+sudo systemctl mask <dienst> | Dienst komplett sperren
+systemctl list-units --type=service | Laufende Dienste
+systemctl --failed | Fehlgeschlagene Units
+systemctl list-timers | Timer anzeigen
+sudo systemctl daemon-reload | Unit-Dateien neu einlesen
+sudo systemctl edit <dienst> | Override-Datei anlegen
+systemctl cat <dienst> | Unit-Datei anzeigen
+systemd-analyze blame | Boot-Zeit pro Dienst
+sudo systemctl reboot | Neustart
+sudo systemctl poweroff | Herunterfahren
+## Logs (journald)
+journalctl -u <dienst> | Logs eines Dienstes
+journalctl -u <dienst> -f | Logs live verfolgen
+journalctl -b | Logs seit Boot
+journalctl -b -1 | Logs vom vorherigen Boot
+journalctl -p err -b | Nur Fehler seit Boot
+journalctl --since "1 hour ago" | Zeitlich eingrenzen
+journalctl -k | Kernel-Meldungen
+journalctl --disk-usage | Platzverbrauch des Journals
+sudo journalctl --vacuum-time=7d | Alte Logs löschen
+dmesg -T | less | Kernel-Ringpuffer mit Zeitstempel
+tail -f /var/log/syslog | Syslog verfolgen
+tail -f /var/log/auth.log | Logins und sudo verfolgen
+last | Letzte Logins
+lastb | Fehlgeschlagene Logins
+## Pakete (apt)
+sudo apt update | Paketlisten aktualisieren
+sudo apt upgrade | Pakete aktualisieren
+sudo apt full-upgrade | Upgrade inkl. Abhängigkeitsänderungen
+sudo apt install <paket> | Installieren
+sudo apt remove <paket> | Entfernen
+sudo apt purge <paket> | Entfernen inkl. Konfiguration
+sudo apt autoremove | Verwaiste Pakete entfernen
+apt search <begriff> | Pakete suchen
+apt show <paket> | Paketdetails
+apt list --installed | Installierte Pakete
+apt list --upgradable | Verfügbare Updates
+dpkg -l | grep <name> | Installierte Pakete filtern
+dpkg -L <paket> | Dateien eines Pakets
+dpkg -S <datei> | Zu welchem Paket gehört die Datei?
+sudo apt-mark hold <paket> | Paket von Updates ausnehmen
+sudo dpkg-reconfigure <paket> | Paket neu konfigurieren
+## Festplatte & Dateisystem
+df -h | Belegung der Dateisysteme
+df -i | Inode-Belegung
+du -sh <ordner> | Größe eines Ordners
+du -h --max-depth=1 / 2>/dev/null | sort -h | Größte Ordner finden
+ncdu <ordner> | Interaktive Platzanalyse (Paket ncdu)
+find / -xdev -size +500M 2>/dev/null | Große Dateien finden
+sudo fdisk -l | Partitionen anzeigen
+sudo blkid | UUIDs und Dateisystemtypen
+sudo mount /dev/<dev> /mnt | Einhängen
+sudo umount /mnt | Aushängen
+findmnt | Mountpoints als Baum
+sudo mkfs.ext4 /dev/<dev> | Dateisystem anlegen (löscht Daten!)
+sudo fsck /dev/<dev> | Dateisystem prüfen (ausgehängt!)
+sudo resize2fs /dev/<dev> | ext4 an Partitionsgröße anpassen
+sudo smartctl -a /dev/<dev> | SMART-Status (Paket smartmontools)
+/etc/fstab | Dauerhafte Mounts
+sudo mount -a | fstab testen
+## LVM
+sudo pvs | Physical Volumes
+sudo vgs | Volume Groups
+sudo lvs | Logical Volumes
+sudo lvextend -r -L +10G /dev/<vg>/<lv> | LV vergrößern inkl. Dateisystem
+sudo lvextend -r -l +100%FREE /dev/<vg>/<lv> | Gesamten freien Platz nutzen
+## Netzwerk
+ip a | IP-Adressen
+ip r | Routing-Tabelle
+ip link set <if> up|down | Interface schalten
+ss -tulpn | Lauschende Ports mit Prozess
+ss -tn state established | Aktive TCP-Verbindungen
+ping -c 4 <host> | Erreichbarkeit testen
+traceroute <host> | Route verfolgen
+mtr <host> | Traceroute + Ping live
+dig <domain> | DNS-Abfrage
+dig +short <domain> | Nur die Antwort
+resolvectl status | DNS-Konfiguration (systemd-resolved)
+curl -I <url> | HTTP-Header abrufen
+curl -v <url> | Verbose-Anfrage
+nc -zv <host> <port> | Port testen
+sudo tcpdump -i <if> port <port> | Pakete mitschneiden
+sudo nmap -sV <host> | Portscan (nur eigene Systeme!)
+sudo netplan apply | Netplan-Konfiguration anwenden
+sudo netplan try | Netplan mit automatischem Rollback
+/etc/netplan/*.yaml | Netplan-Konfiguration
+/etc/hosts | Lokale Namensauflösung
+## Firewall (ufw)
+sudo ufw status verbose | Status und Regeln
+sudo ufw enable | Firewall aktivieren
+sudo ufw default deny incoming | Standard: eingehend sperren
+sudo ufw allow 22/tcp | Port erlauben
+sudo ufw allow from <ip> to any port 22 | SSH nur von einer IP
+sudo ufw deny <port> | Port sperren
+sudo ufw status numbered | Regeln nummeriert
+sudo ufw delete <nr> | Regel löschen
+sudo ufw reload | Neu laden
+sudo iptables -L -n -v | iptables-Regeln anzeigen
+sudo nft list ruleset | nftables-Regeln anzeigen
+## SSH
+ssh <user>@<host> | Verbinden
+ssh -p <port> <user>@<host> | Anderer Port
+ssh -i ~/.ssh/<key> <user>@<host> | Mit bestimmtem Key
+ssh-keygen -t ed25519 -C "<kommentar>" | Key erzeugen
+ssh-copy-id <user>@<host> | Public Key auf Server kopieren
+ssh -L 8080:localhost:80 <user>@<host> | Lokaler Port-Forward
+ssh -D 1080 <user>@<host> | SOCKS-Proxy
+ssh -J <jump> <user>@<host> | Über Jump-Host
+~/.ssh/config | Host-Aliase und Optionen
+/etc/ssh/sshd_config | Server-Konfiguration
+sudo sshd -t | sshd-Konfiguration prüfen
+sudo systemctl reload ssh | sshd neu laden
+PermitRootLogin no | Root-Login verbieten (sshd_config)
+PasswordAuthentication no | Nur Key-Login (sshd_config)
+sudo fail2ban-client status sshd | Gebannte IPs (Paket fail2ban)
+## Dateiübertragung & Backup
+scp <datei> <user>@<host>:<pfad> | Datei kopieren
+rsync -avzP <quelle> <user>@<host>:<ziel> | Synchronisieren mit Fortschritt
+rsync -a --delete <quelle>/ <ziel>/ | Spiegeln (löscht im Ziel!)
+rsync -avn <quelle> <ziel> | Trockenlauf
+tar -czf <name>.tar.gz <ordner> | Archiv erstellen
+tar -xzf <name>.tar.gz -C <ziel> | Archiv entpacken
+tar -tzf <name>.tar.gz | Archivinhalt anzeigen
+dd if=<quelle> of=<ziel> bs=4M status=progress | Image kopieren (Vorsicht!)
+## Cron & Timer
+crontab -e | Eigene Cronjobs bearbeiten
+crontab -l | Cronjobs anzeigen
+sudo crontab -u <user> -e | Cronjobs eines Benutzers
+*/5 * * * * <befehl> | Alle 5 Minuten
+0 3 * * * <befehl> | Täglich um 03:00
+0 2 * * 0 <befehl> | Sonntags um 02:00
+@reboot <befehl> | Beim Systemstart
+/etc/cron.d/ | System-Cronjobs
+at now + 1 hour | Einmaliger Job
+## Ressourcen & Performance
+vmstat 1 | CPU, RAM, I/O pro Sekunde
+iostat -xz 1 | Disk-I/O (Paket sysstat)
+iotop | I/O pro Prozess
+sar -u 1 5 | CPU-Auslastung
+watch -n 2 <befehl> | Befehl regelmäßig ausführen
+ulimit -a | Ressourcen-Limits
+sysctl -a | grep <name> | Kernel-Parameter suchen
+sudo sysctl -w <key>=<wert> | Kernel-Parameter temporär setzen
+/etc/sysctl.d/*.conf | Kernel-Parameter dauerhaft
+free -h; swapon --show | Swap-Status
+## Benutzer & Rechte
+sudo adduser <user> | Benutzer anlegen
+sudo usermod -aG sudo <user> | Sudo-Rechte geben
+sudo passwd -l <user> | Konto sperren
+sudo chage -l <user> | Passwort-Ablauf anzeigen
+sudo visudo | sudoers sicher bearbeiten
+sudo -l | Eigene sudo-Rechte
+sudo -u <user> -i | Shell als anderer Benutzer
+w | Wer ist eingeloggt?
+sudo getfacl <pfad> | ACLs anzeigen
+sudo setfacl -m u:<user>:rwx <pfad> | ACL setzen
+## Text & Suche
+grep -rn "<text>" <pfad> | Rekursiv suchen
+find <pfad> -name "<muster>" | Dateien nach Name suchen
+find <pfad> -mtime -1 | Dateien der letzten 24 h
+find <pfad> -type f -exec <befehl> {} + | Befehl auf Treffer anwenden
+tail -f <datei> | Datei live verfolgen
+less +F <datei> | Wie tail -f, aber scrollbar
+awk '{print $1}' <datei> | Erste Spalte ausgeben
+sort | uniq -c | sort -rn | Häufigkeiten zählen
+## Wichtige Pfade
+/etc | Konfiguration
+/var/log | Logfiles
+/var/lib | Persistente Dienstdaten
+/etc/systemd/system | Eigene Unit-Dateien
+/etc/environment | Globale Umgebungsvariablen
+/etc/hosts | Statische Hostnamen
+/etc/resolv.conf | DNS-Resolver
+/etc/fstab | Mounts beim Boot
+/etc/sudoers.d/ | sudo-Regeln
+/etc/ssh/ | SSH-Server-Konfiguration
