@@ -1,0 +1,53 @@
+@ chmod – Dateirechte ändern
+## Grundlagen
+ls -l <datei> | Rechte anzeigen (z. B. -rwxr-xr--)
+stat -c '%a %A %U:%G %n' <datei> | Rechte oktal und symbolisch anzeigen
+r=4 w=2 x=1 | Oktalwerte: Lesen, Schreiben, Ausführen
+chmod <modus> <datei> | Rechte setzen (Reihenfolge: Besitzer, Gruppe, Andere)
+chmod --reference=<ref> <datei> | Rechte von anderer Datei übernehmen
+## Oktal
+chmod 644 <datei> | rw-r--r-- (normale Datei)
+chmod 755 <datei> | rwxr-xr-x (Skript, Programm, Ordner)
+chmod 600 <datei> | rw------- (nur Besitzer, z. B. SSH-Key)
+chmod 700 <ordner> | rwx------ (privater Ordner)
+chmod 664 <datei> | rw-rw-r-- (Gruppe darf schreiben)
+chmod 775 <ordner> | rwxrwxr-x (Gruppenordner)
+chmod 400 <datei> | r-------- (nur lesbar)
+chmod 777 <datei> | Alle dürfen alles (vermeiden!)
+## Symbolisch
+chmod u+x <datei> | Ausführbar für Besitzer
+chmod +x <datei> | Ausführbar für alle (je nach umask)
+chmod g+w <datei> | Gruppe darf schreiben
+chmod o-rwx <datei> | Andere: alle Rechte entziehen
+chmod a+r <datei> | Alle dürfen lesen
+chmod u=rwx,g=rx,o= <datei> | Rechte exakt setzen
+chmod g=u <datei> | Gruppe erhält Rechte des Besitzers
+chmod u+x,g-w <datei> | Mehrere Änderungen kombinieren
+## Rekursiv
+chmod -R 755 <ordner> | Rechte rekursiv setzen
+chmod -R g+w <ordner> | Gruppe darf schreiben (rekursiv)
+chmod -R u=rwX,go=rX <ordner> | Großes X: x nur für Ordner/bereits ausführbare Dateien
+find <ordner> -type d -exec chmod 755 {} + | Nur Ordner anpassen
+find <ordner> -type f -exec chmod 644 {} + | Nur Dateien anpassen
+chmod -c <modus> <datei> | Nur tatsächliche Änderungen ausgeben
+chmod -v <modus> <datei> | Jede Änderung ausgeben
+## Spezialrechte
+chmod u+s <datei> | Setuid: läuft mit Rechten des Besitzers
+chmod g+s <ordner> | Setgid: neue Dateien erben die Gruppe
+chmod +t <ordner> | Sticky Bit: nur Besitzer darf löschen (wie /tmp)
+chmod 2775 <ordner> | Setgid + rwxrwxr-x
+chmod 1777 <ordner> | Sticky + rwxrwxrwx
+chmod 4755 <datei> | Setuid + rwxr-xr-x
+find / -perm -4000 -type f 2>/dev/null | Alle Setuid-Dateien finden
+## Besitzer & umask
+chown <user>:<gruppe> <datei> | Besitzer und Gruppe ändern
+chown -R <user>: <ordner> | Besitzer rekursiv, Gruppe = Login-Gruppe
+chgrp <gruppe> <datei> | Gruppe ändern
+umask | Aktuelle umask anzeigen (022 → Dateien 644, Ordner 755)
+umask 027 | Neue Dateien 640, Ordner 750
+## Typische Fälle
+chmod 600 ~/.ssh/id_ed25519 | SSH-Private-Key absichern
+chmod 700 ~/.ssh | SSH-Ordner absichern
+chmod 644 ~/.ssh/authorized_keys | Erlaubte Public Keys (600 ist ebenfalls üblich)
+chmod +x script.sh | Skript ausführbar machen
+sudo chmod 644 /etc/<datei> | Config-Datei lesbar für alle

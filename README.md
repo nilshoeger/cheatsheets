@@ -14,6 +14,7 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 | `users`  | Linux (Ubuntu) – Benutzer- & Gruppenverwaltung |
 | `docker` | Docker – Container, Images & Compose           |
 | `dotnet` | dotnet – .NET (Core) CLI                       |
+| `chmod`  | chmod – Dateirechte ändern                     |
 
 ## Verwendung
 
@@ -55,6 +56,7 @@ cheatsheets/
 ├── cheatsheet          # Skript (Bash)
 ├── install.sh          # Installer (Symlink in den PATH)
 ├── README.md
+├── chmod/cheatsheet.txt
 ├── docker/cheatsheet.txt
 ├── dotnet/cheatsheet.txt
 ├── git/cheatsheet.txt
