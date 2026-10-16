@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # cheatsheet – farbige Cheatsheets im Terminal
-# Aufruf: cheatsheet [thema] [suchbegriff]
+# Aufruf: cheatsheet [thema] [suchbegriff] | cheatsheet --update
 SELF="$(readlink -f "${BASH_SOURCE[0]}")"
 DIR="$(dirname "$SELF")"
 
@@ -16,7 +16,8 @@ topics() { for d in "$DIR"/*/; do [[ -f "$d/cheatsheet.txt" ]] && basename "$d";
 
 usage() {
   printf '\n %s%s⚡ cheatsheet%s  %sKurzreferenzen im Terminal%s\n\n' "$B" "$C1" "$R" "$C5" "$R"
-  printf ' %sAufruf:%s cheatsheet %s<thema>%s [%ssuchbegriff%s]\n\n' "$B" "$R" "$C2" "$R" "$C3" "$R"
+  printf ' %sAufruf:%s cheatsheet %s<thema>%s [%ssuchbegriff%s]\n' "$B" "$R" "$C2" "$R" "$C3" "$R"
+  printf ' %sUpdate:%s  cheatsheet %s--update%s\n\n' "$B" "$R" "$C2" "$R"
   printf ' %sVerfügbare Themen:%s\n' "$B" "$R"
   for t in $(topics); do
     title=$(grep -m1 '^@' "$DIR/$t/cheatsheet.txt" | sed 's/^@ *//')
@@ -56,8 +57,30 @@ render() {
   printf '\n'
 }
 
+update() {
+  if ! git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    printf ' \e[31m✗ %s ist kein Git-Repository.\e[0m\n' "$DIR" >&2; return 1
+  fi
+  if ! git -C "$DIR" diff --quiet || ! git -C "$DIR" diff --cached --quiet; then
+    printf ' \e[31m✗ Lokale Änderungen vorhanden – bitte erst committen oder verwerfen.\e[0m\n' >&2; return 1
+  fi
+  local old new
+  old=$(git -C "$DIR" rev-parse HEAD)
+  printf ' %s⟳ Suche nach Updates …%s\n' "$C5" "$R"
+  git -C "$DIR" pull --ff-only --quiet || {
+    printf ' \e[31m✗ Update fehlgeschlagen.\e[0m\n' >&2; return 1; }
+  new=$(git -C "$DIR" rev-parse HEAD)
+  if [[ "$old" == "$new" ]]; then
+    printf ' %s✓ Bereits aktuell.%s\n' "$C3" "$R"
+  else
+    printf ' %s✓ Aktualisiert:%s\n' "$C3" "$R"
+    git -C "$DIR" --no-pager log --pretty='   %C(yellow)%h%Creset %s' "$old..$new"
+  fi
+}
+
 case "${1:-}" in
   ""|-h|--help|list) usage; exit 0 ;;
+  -u|--update) update; exit $? ;;
 esac
 
 topic="$1"; shift
