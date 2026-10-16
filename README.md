@@ -23,6 +23,14 @@ cheatsheet ros2 bag     # Suche in Befehlen, Beschreibungen und Sektionsnamen
 - Lange Ausgaben laufen automatisch durch `less`. Mit `PAGER` lässt sich ein anderer Pager setzen.
 - `NO_COLOR=1 cheatsheet vim` schaltet die Farben ab. Beim Umleiten in eine Datei oder Pipe sind sie automatisch aus.
 
+## Aktualisieren
+
+```bash
+cheatsheet --update     # oder -u: holt neue Commits per git pull --ff-only
+```
+
+Zeigt die neuen Commits an. Bei lokalen Änderungen oder nicht fast-forward-fähigem Verlauf bricht das Update mit einer Meldung ab.
+
 ## Installation
 
 ```bash
