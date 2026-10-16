@@ -4,18 +4,18 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 
 ## Verfügbare Themen
 
-| Thema    | Inhalt                                         |
-|----------|------------------------------------------------|
-| `vim`    | Vim – Editor                                   |
-| `tmux`   | tmux – Terminal-Multiplexer                    |
-| `ros2`   | ROS 2 – Robot Operating System                 |
-| `git`    | git – Versionsverwaltung                       |
-| `nginx`  | nginx – Webserver & Reverse Proxy              |
-| `users`  | Linux (Ubuntu) – Benutzer- & Gruppenverwaltung |
-| `docker` | Docker – Container, Images & Compose           |
-| `dotnet` | dotnet – .NET (Core) CLI                       |
-| `chmod`  | chmod – Dateirechte ändern                     |
-| `groups` | Linux – Gruppen verwalten                      |
+| Thema      | Inhalt                                            |
+|------------|---------------------------------------------------|
+| `vim`      | Vim – Editor                                      |
+| `tmux`     | tmux – Terminal-Multiplexer                       |
+| `ros2`     | ROS 2 – Robot Operating System                    |
+| `git`      | git – Versionsverwaltung                          |
+| `nginx`    | nginx – Webserver & Reverse Proxy                 |
+| `users`    | Linux (Ubuntu) – Benutzer- & Gruppenverwaltung    |
+| `docker`   | Docker – Container, Images & Compose              |
+| `dotnet`   | dotnet – .NET (Core) CLI                          |
+| `chmod`    | chmod – Dateirechte ändern                        |
+| `groups`   | Linux – Gruppen verwalten                         |
 | `sysadmin` | Linux – Sysadmin: System, Dienste, Netzwerk, Logs |
 
 ## Verwendung
