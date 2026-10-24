@@ -1,0 +1,104 @@
+@ MySQL – Administration
+## Dienst
+sudo systemctl status mysql | Status des MySQL-Dienstes
+sudo systemctl start|stop|restart mysql | Dienst steuern
+sudo apt install mysql-server | MySQL-Server installieren (Ubuntu)
+sudo mysql_secure_installation | Root absichern, Testdaten entfernen
+mysql --version | Client-Version
+sudo journalctl -u mysql -f | Dienst-Log live verfolgen
+sudo tail -f /var/log/mysql/error.log | Fehlerlog live verfolgen
+## Verbinden
+sudo mysql | Als root über Unix-Socket (Ubuntu-Standard)
+mysql -u <user> -p | Als Benutzer anmelden, Passwort abfragen
+mysql -u <user> -p <db> | Direkt mit Datenbank verbinden
+mysql -h <host> -P 3306 -u <user> -p | Entfernter Server
+mysql -u <user> -p -e "<sql>" | Einzelnen Befehl ausführen
+mysql -u <user> -p <db> < skript.sql | SQL-Datei ausführen
+SOURCE /pfad/skript.sql; | SQL-Datei in der Shell ausführen
+\G | Ausgabe vertikal statt als Tabelle (statt ;)
+exit | MySQL-Shell verlassen
+## Datenbanken
+SHOW DATABASES; | Alle Datenbanken
+CREATE DATABASE <db> CHARACTER SET utf8mb4; | Datenbank anlegen
+DROP DATABASE <db>; | Datenbank löschen
+USE <db>; | Datenbank wechseln
+SELECT DATABASE(); | Aktuelle Datenbank
+SHOW CREATE DATABASE <db>; | Zeichensatz und Optionen
+## Tabellen
+SHOW TABLES; | Tabellen der aktuellen DB
+DESCRIBE <tabelle>; | Spalten und Typen
+SHOW CREATE TABLE <tabelle>\G | Vollständige Tabellendefinition
+SHOW INDEX FROM <tabelle>; | Indizes einer Tabelle
+SHOW TABLE STATUS\G | Engine, Zeilen, Größe aller Tabellen
+## Benutzer
+SELECT user, host FROM mysql.user; | Alle Benutzer
+CREATE USER '<u>'@'localhost' IDENTIFIED BY '<pw>'; | Lokalen Benutzer anlegen
+CREATE USER '<u>'@'%' IDENTIFIED BY '<pw>'; | Benutzer für alle Hosts
+ALTER USER '<u>'@'localhost' IDENTIFIED BY '<pw>'; | Passwort ändern
+RENAME USER '<u>'@'localhost' TO '<neu>'@'localhost'; | Benutzer umbenennen
+DROP USER '<u>'@'localhost'; | Benutzer löschen
+ALTER USER '<u>'@'localhost' ACCOUNT LOCK; | Konto sperren (UNLOCK entsperrt)
+SELECT CURRENT_USER(); | Angemeldeter Benutzer
+## Rechte
+GRANT ALL PRIVILEGES ON <db>.* TO '<u>'@'localhost'; | Alle Rechte auf eine DB
+GRANT SELECT, INSERT, UPDATE ON <db>.* TO '<u>'@'%'; | Einzelne Rechte vergeben
+GRANT SELECT ON <db>.<tabelle> TO '<u>'@'%'; | Rechte auf eine Tabelle
+REVOKE INSERT ON <db>.* FROM '<u>'@'%'; | Recht entziehen
+SHOW GRANTS FOR '<u>'@'localhost'; | Rechte eines Benutzers
+SHOW GRANTS; | Eigene Rechte
+FLUSH PRIVILEGES; | Rechtetabellen neu laden (nur nach direkten Änderungen)
+## Backup & Restore
+mysqldump -u <user> -p <db> > db.sql | Datenbank sichern
+mysqldump -u <user> -p --all-databases > alle.sql | Alle Datenbanken sichern
+mysqldump -u <user> -p --single-transaction <db> > db.sql | Konsistent ohne Sperren (InnoDB)
+mysqldump -u <user> -p --no-data <db> > schema.sql | Nur Struktur
+mysqldump -u <user> -p <db> <tabelle> > t.sql | Einzelne Tabelle
+mysqldump -u <user> -p --routines --triggers <db> > db.sql | Mit Prozeduren und Triggern
+mysqldump -u <user> -p <db>|gzip > db.sql.gz | Komprimiert sichern
+mysql -u <user> -p <db> < db.sql | Dump einspielen
+zcat db.sql.gz|mysql -u <user> -p <db> | Komprimierten Dump einspielen
+## Status & Monitoring
+SHOW PROCESSLIST; | Aktive Verbindungen und Abfragen
+SHOW FULL PROCESSLIST; | Inkl. vollständigem SQL-Text
+KILL <id>; | Verbindung/Abfrage beenden
+SHOW STATUS LIKE 'Threads_connected'; | Anzahl offener Verbindungen
+SHOW GLOBAL STATUS LIKE 'Uptime'; | Laufzeit in Sekunden
+SHOW ENGINE INNODB STATUS\G | InnoDB-Details, Deadlocks
+mysqladmin -u root -p status | Kurzstatus von der Shell
+mysqladmin -u root -p processlist | Prozessliste von der Shell
+## Größe & Speicher
+SELECT table_schema, ROUND(SUM(data_length+index_length)/1024/1024,1) AS MB FROM information_schema.tables GROUP BY table_schema; | Größe aller Datenbanken in MB
+SELECT table_name, ROUND((data_length+index_length)/1024/1024,1) AS MB FROM information_schema.tables WHERE table_schema='<db>' ORDER BY MB DESC; | Größte Tabellen einer DB
+sudo du -sh /var/lib/mysql | Größe des Datenverzeichnisses
+## Konfiguration
+SHOW VARIABLES LIKE '%<name>%'; | Konfigurationsvariablen suchen
+SET GLOBAL max_connections = 300; | Variable zur Laufzeit setzen
+SET PERSIST max_connections = 300; | Setzen und dauerhaft speichern (MySQL 8)
+/etc/mysql/mysql.conf.d/mysqld.cnf | Server-Konfiguration (Ubuntu)
+bind-address = 0.0.0.0 | In mysqld.cnf: Zugriff von außen erlauben
+mysqld --verbose --help|grep -A1 'Default options' | Gelesene Konfigurationsdateien
+## Logs
+SET GLOBAL slow_query_log = 'ON'; | Slow-Query-Log aktivieren
+SET GLOBAL long_query_time = 1; | Schwelle für langsame Abfragen (Sek.)
+SHOW VARIABLES LIKE 'slow_query_log_file'; | Pfad des Slow-Query-Logs
+SHOW BINARY LOGS; | Binärlogs anzeigen
+PURGE BINARY LOGS BEFORE NOW() - INTERVAL 7 DAY; | Alte Binärlogs löschen
+## Wartung
+ANALYZE TABLE <tabelle>; | Index-Statistiken aktualisieren
+OPTIMIZE TABLE <tabelle>; | Tabelle neu aufbauen, Platz freigeben
+CHECK TABLE <tabelle>; | Tabelle auf Fehler prüfen
+mysqlcheck -u root -p --all-databases | Alle Tabellen prüfen
+mysqlcheck -u root -p --optimize <db> | Alle Tabellen einer DB optimieren
+EXPLAIN SELECT ...; | Ausführungsplan einer Abfrage
+## Replikation
+SHOW REPLICA STATUS\G | Replikationsstatus (Replica)
+SHOW BINARY LOG STATUS; | Binlog-Position (Source, ab 8.4)
+START REPLICA; | Replikation starten
+STOP REPLICA; | Replikation stoppen
+## Root-Passwort zurücksetzen
+sudo systemctl stop mysql | 1. Dienst stoppen
+sudo mkdir -p /var/run/mysqld && sudo chown mysql: /var/run/mysqld | Ggf. Socket-Verzeichnis anlegen (Ubuntu)
+sudo mysqld_safe --skip-grant-tables --skip-networking & | 2. Ohne Rechteprüfung starten
+mysql -u root | 3. Ohne Passwort anmelden
+FLUSH PRIVILEGES; ALTER USER 'root'@'localhost' IDENTIFIED BY '<pw>'; | 4. Neues Passwort setzen
+sudo mysqladmin shutdown && sudo systemctl start mysql | 5. Neu starten

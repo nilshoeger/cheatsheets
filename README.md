@@ -17,6 +17,7 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 | `chmod`    | chmod – Dateirechte ändern                        |
 | `groups`   | Linux – Gruppen verwalten                         |
 | `sysadmin` | Linux – Sysadmin: System, Dienste, Netzwerk, Logs |
+| `mysql`    | MySQL – Administration                            |
 
 ## Verwendung
 
@@ -62,8 +63,11 @@ cheatsheets/
 ├── docker/cheatsheet.txt
 ├── dotnet/cheatsheet.txt
 ├── git/cheatsheet.txt
+├── groups/cheatsheet.txt
+├── mysql/cheatsheet.txt
 ├── nginx/cheatsheet.txt
 ├── ros2/cheatsheet.txt
+├── sysadmin/cheatsheet.txt
 ├── tmux/cheatsheet.txt
 ├── users/cheatsheet.txt
 └── vim/cheatsheet.txt
