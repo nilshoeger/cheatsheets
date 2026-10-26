@@ -42,12 +42,32 @@ rsync -avzn <quelle> <user>@<host>:<ziel> | Probelauf (-n = dry run)
 sftp <user>@<host> | Interaktive Dateiübertragung
 sshfs <user>@<host>:<pfad> <mountpunkt> | Remote-Ordner einhängen (Paket sshfs)
 fusermount -u <mountpunkt> | sshfs aushängen
-## Tunnel
-ssh -L 8080:localhost:80 <user>@<host> | Lokaler Port 8080 → Port 80 auf Server
-ssh -L 3307:<db-host>:3306 <user>@<host> | Lokal 3307 → DB hinter dem Server
-ssh -R 9000:localhost:3000 <user>@<host> | Server-Port 9000 → lokaler Port 3000
-ssh -D 1080 <user>@<host> | SOCKS-Proxy auf lokalem Port 1080
-ssh -N -f -L 8080:localhost:80 <user>@<host> | Tunnel im Hintergrund ohne Shell
+## Port-Forwarding: Local (-L)
+ssh -L <lport>:<zielhost>:<zport> <user>@<host> | Schema: lokaler Port → Ziel aus Sicht des Servers
+ssh -L 8080:localhost:80 <user>@<host> | localhost:8080 → Port 80 auf dem Server
+ssh -L 3307:localhost:3306 <user>@<host> | Entfernte MySQL-DB lokal auf 3307
+ssh -L 3307:<db-host>:3306 <user>@<host> | DB hinter dem Server erreichen
+ssh -L 5432:localhost:5432 -L 6379:localhost:6379 <user>@<host> | Mehrere Ports gleichzeitig
+ssh -L 0.0.0.0:8080:localhost:80 <user>@<host> | Auch für andere Rechner im LAN freigeben
+ssh -L 8080:localhost:80 -J <jump> <user>@<ziel> | Forwarding über Jumphost
+## Port-Forwarding: Remote (-R)
+ssh -R <rport>:<zielhost>:<zport> <user>@<host> | Schema: Server-Port → Ziel aus Sicht des Clients
+ssh -R 9000:localhost:3000 <user>@<host> | Server:9000 → lokaler Port 3000
+ssh -R 2222:localhost:22 <user>@<host> | Reverse-SSH: eigenen Rechner hinter NAT erreichbar machen
+ssh -R 0.0.0.0:9000:localhost:3000 <user>@<host> | Server-Port öffentlich (GatewayPorts yes nötig)
+GatewayPorts yes | In sshd_config: Remote-Ports nicht nur auf localhost binden
+## Port-Forwarding: Dynamic (-D)
+ssh -D 1080 <user>@<host> | SOCKS5-Proxy auf localhost:1080
+curl --socks5-hostname localhost:1080 <url> | Proxy z. B. mit curl nutzen
+## Port-Forwarding: Optionen
+ssh -N -L 8080:localhost:80 <user>@<host> | Nur Forwarding, keine Shell
+ssh -f -N -L 8080:localhost:80 <user>@<host> | Forwarding im Hintergrund
+ssh -o ExitOnForwardFailure=yes -f -N -L ... | Abbrechen, wenn Port belegt ist
+autossh -M 0 -f -N -L 8080:localhost:80 <user>@<host> | Tunnel automatisch neu aufbauen (Paket autossh)
+~C | In laufender Sitzung: Forwarding nachträglich hinzufügen (z. B. -L 8080:localhost:80)
+ss -tlnp | Prüfen, ob der Port lokal lauscht
+pkill -f "ssh -f -N -L 8080" | Hintergrund-Tunnel beenden
+AllowTcpForwarding yes | In sshd_config: Forwarding auf dem Server erlauben
 ## Client-Konfiguration
 ~/.ssh/config | Konfigurationsdatei für Host-Aliase
 Host <alias> | Neuer Eintrag, danach: ssh <alias>
@@ -57,7 +77,9 @@ Host <alias> | Neuer Eintrag, danach: ssh <alias>
   IdentityFile ~/.ssh/id_ed25519 | Schlüssel
   IdentitiesOnly yes | Nur diesen Schlüssel anbieten
   ProxyJump <jump> | Über Jumphost
-  LocalForward 8080 localhost:80 | Tunnel automatisch öffnen
+  LocalForward 8080 localhost:80 | Local-Forwarding automatisch öffnen
+  RemoteForward 9000 localhost:3000 | Remote-Forwarding automatisch öffnen
+  DynamicForward 1080 | SOCKS-Proxy automatisch öffnen
   ServerAliveInterval 60 | Verbindung am Leben halten
   ForwardAgent yes | Agent-Forwarding
 chmod 600 ~/.ssh/config | Rechte für config setzen
