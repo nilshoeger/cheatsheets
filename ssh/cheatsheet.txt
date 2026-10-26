@@ -1,0 +1,94 @@
+@ SSH – Secure Shell
+## Verbinden
+ssh <user>@<host> | Mit Server verbinden
+ssh -p 2222 <user>@<host> | Anderer Port
+ssh -i ~/.ssh/id_ed25519 <user>@<host> | Bestimmten Schlüssel verwenden
+ssh <user>@<host> '<befehl>' | Befehl remote ausführen
+ssh -t <user>@<host> 'sudo htop' | Mit Terminal (für interaktive Befehle)
+ssh -J <jump> <user>@<ziel> | Über Jumphost verbinden
+ssh -v <user>@<host> | Debug-Ausgabe (-vvv für mehr)
+ssh -o ConnectTimeout=5 <user>@<host> | Verbindungs-Timeout setzen
+ssh -X <user>@<host> | X11-Forwarding (GUI-Programme)
+## Schlüssel
+ssh-keygen -t ed25519 -C "<kommentar>" | Neues Schlüsselpaar erzeugen (empfohlen)
+ssh-keygen -t rsa -b 4096 | RSA-Schlüssel für alte Systeme
+ssh-copy-id <user>@<host> | Public Key auf Server kopieren
+ssh-copy-id -i ~/.ssh/id_ed25519.pub <user>@<host> | Bestimmten Key kopieren
+ssh-keygen -p -f ~/.ssh/id_ed25519 | Passphrase ändern
+ssh-keygen -y -f ~/.ssh/id_ed25519 | Public Key aus Private Key erzeugen
+ssh-keygen -lf ~/.ssh/id_ed25519.pub | Fingerprint anzeigen
+cat ~/.ssh/id_ed25519.pub | Public Key anzeigen (zum Kopieren)
+## ssh-agent
+eval "$(ssh-agent -s)" | Agent starten
+ssh-add | Standard-Schlüssel laden
+ssh-add ~/.ssh/<key> | Bestimmten Schlüssel laden
+ssh-add -l | Geladene Schlüssel
+ssh-add -D | Alle Schlüssel entladen
+ssh -A <user>@<host> | Agent-Forwarding (nur zu vertrauten Hosts)
+## Known Hosts
+ssh-keygen -R <host> | Alten Host-Key entfernen (nach Neuinstallation)
+ssh-keygen -F <host> | Eintrag in known_hosts suchen
+ssh-keyscan <host> >> ~/.ssh/known_hosts | Host-Key vorab eintragen
+ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub | Server-Fingerprint prüfen (auf dem Server)
+## Dateien kopieren
+scp <datei> <user>@<host>:<pfad> | Datei hochladen
+scp <user>@<host>:<pfad> . | Datei herunterladen
+scp -r <ordner> <user>@<host>:<pfad> | Ordner rekursiv kopieren
+scp -P 2222 <datei> <user>@<host>:<pfad> | Anderer Port (großes P)
+rsync -avz <ordner>/ <user>@<host>:<pfad>/ | Synchronisieren (nur Änderungen)
+rsync -avz --delete <quelle>/ <user>@<host>:<ziel>/ | Spiegeln, Überzähliges löschen
+rsync -avz -e "ssh -p 2222" <quelle> <user>@<host>:<ziel> | rsync über anderen Port
+rsync -avzn <quelle> <user>@<host>:<ziel> | Probelauf (-n = dry run)
+sftp <user>@<host> | Interaktive Dateiübertragung
+sshfs <user>@<host>:<pfad> <mountpunkt> | Remote-Ordner einhängen (Paket sshfs)
+fusermount -u <mountpunkt> | sshfs aushängen
+## Tunnel
+ssh -L 8080:localhost:80 <user>@<host> | Lokaler Port 8080 → Port 80 auf Server
+ssh -L 3307:<db-host>:3306 <user>@<host> | Lokal 3307 → DB hinter dem Server
+ssh -R 9000:localhost:3000 <user>@<host> | Server-Port 9000 → lokaler Port 3000
+ssh -D 1080 <user>@<host> | SOCKS-Proxy auf lokalem Port 1080
+ssh -N -f -L 8080:localhost:80 <user>@<host> | Tunnel im Hintergrund ohne Shell
+## Client-Konfiguration
+~/.ssh/config | Konfigurationsdatei für Host-Aliase
+Host <alias> | Neuer Eintrag, danach: ssh <alias>
+  HostName <host-oder-ip> | Echte Adresse
+  User <user> | Benutzername
+  Port 2222 | Port
+  IdentityFile ~/.ssh/id_ed25519 | Schlüssel
+  IdentitiesOnly yes | Nur diesen Schlüssel anbieten
+  ProxyJump <jump> | Über Jumphost
+  LocalForward 8080 localhost:80 | Tunnel automatisch öffnen
+  ServerAliveInterval 60 | Verbindung am Leben halten
+  ForwardAgent yes | Agent-Forwarding
+chmod 600 ~/.ssh/config | Rechte für config setzen
+## Server (sshd)
+sudo apt install openssh-server | SSH-Server installieren (Ubuntu)
+sudo systemctl status ssh | Status des Dienstes
+sudo systemctl restart ssh | Dienst neu starten
+sudo sshd -t | Konfiguration auf Fehler prüfen (vor Restart!)
+sudo sshd -T | Effektive Konfiguration anzeigen
+/etc/ssh/sshd_config | Server-Konfiguration
+/etc/ssh/sshd_config.d/*.conf | Zusätzliche Konfigurationsdateien
+## Server absichern
+PasswordAuthentication no | Nur Schlüssel erlauben
+PermitRootLogin no | Kein direkter Root-Login
+PubkeyAuthentication yes | Schlüssel-Login aktivieren
+AllowUsers <user1> <user2> | Nur bestimmte Benutzer zulassen
+Port 2222 | Anderen Port verwenden
+MaxAuthTries 3 | Maximale Anmeldeversuche
+sudo ufw allow OpenSSH | SSH in der Firewall freigeben
+sudo apt install fail2ban | Brute-Force-Schutz
+## Rechte & Logs
+chmod 700 ~/.ssh | Rechte für .ssh-Ordner
+chmod 600 ~/.ssh/authorized_keys | Rechte für authorized_keys
+chmod 600 ~/.ssh/id_ed25519 | Rechte für Private Key
+~/.ssh/authorized_keys | Erlaubte Public Keys (auf dem Server)
+sudo journalctl -u ssh -f | SSH-Log live verfolgen
+sudo tail -f /var/log/auth.log | Anmeldeversuche live verfolgen
+last | Letzte Anmeldungen
+who | Aktuell angemeldete Benutzer
+## Escape-Sequenzen
+~. | Hängende Verbindung trennen (nach Enter)
+~^Z | SSH in den Hintergrund
+~# | Weitergeleitete Verbindungen anzeigen
+~? | Alle Escape-Sequenzen

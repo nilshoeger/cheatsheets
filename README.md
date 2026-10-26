@@ -18,6 +18,7 @@ Farbige Kurzreferenzen im Terminal. Aufruf per `cheatsheet <thema>`.
 | `groups`   | Linux – Gruppen verwalten                         |
 | `sysadmin` | Linux – Sysadmin: System, Dienste, Netzwerk, Logs |
 | `mysql`    | MySQL – Administration                            |
+| `ssh`      | SSH – Verbindungen, Schlüssel, Tunnel, Server     |
 
 ## Verwendung
 
@@ -67,6 +68,7 @@ cheatsheets/
 ├── mysql/cheatsheet.txt
 ├── nginx/cheatsheet.txt
 ├── ros2/cheatsheet.txt
+├── ssh/cheatsheet.txt
 ├── sysadmin/cheatsheet.txt
 ├── tmux/cheatsheet.txt
 ├── users/cheatsheet.txt
